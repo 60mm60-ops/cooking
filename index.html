@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -11,669 +12,658 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
-            background: linear-gradient(135deg, #ff9a56 0%, #ffad56 50%, #ff6b9d 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #2c1810;
-        }
+```
+    body {
+        font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+        background: linear-gradient(135deg, #ff9a56 0%, #ffad56 50%, #ff6b9d 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #2c1810;
+    }
 
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
+    .container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.3);
-            color: #2c1810;
-        }
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(255,255,255,0.3);
+        color: #2c1810;
+    }
 
-        .hidden {
-            display: none !important;
-        }
+    .hidden {
+        display: none !important;
+    }
 
-        .recipe-input {
-            background: rgba(255,255,255,0.9);
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            color: #2c1810;
-        }
+    .recipe-input {
+        background: rgba(255,255,255,0.9);
+        padding: 25px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        color: #2c1810;
+    }
 
-        .recipe-input h2 {
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
+    .recipe-input h2 {
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+    }
 
-        .recipe-textarea {
-            width: 100%;
-            height: 200px;
-            padding: 15px;
-            border: 2px solid #ffb366;
-            border-radius: 10px;
-            background: white;
-            color: #2c1810;
-            font-size: 1rem;
-            line-height: 1.5;
-            resize: vertical;
-        }
+    .recipe-textarea {
+        width: 100%;
+        height: 200px;
+        padding: 15px;
+        border: 2px solid #ffb366;
+        border-radius: 10px;
+        background: white;
+        color: #2c1810;
+        font-size: 1rem;
+        line-height: 1.5;
+        resize: vertical;
+    }
 
-        .recipe-textarea:focus {
-            outline: none;
-            border-color: #ff6b9d;
-            box-shadow: 0 0 10px rgba(255,107,157,0.3);
-        }
+    .recipe-textarea:focus {
+        outline: none;
+        border-color: #ff6b9d;
+        box-shadow: 0 0 10px rgba(255,107,157,0.3);
+    }
 
-        .recipe-name {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #ffb366;
-            border-radius: 10px;
-            background: white;
-            color: #2c1810;
-            font-size: 1.1rem;
-        }
+    .recipe-name {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 2px solid #ffb366;
+        border-radius: 10px;
+        background: white;
+        color: #2c1810;
+        font-size: 1.1rem;
+    }
 
-        .recipe-name:focus {
-            outline: none;
-            border-color: #ff6b9d;
-            box-shadow: 0 0 10px rgba(255,107,157,0.3);
-        }
+    .recipe-name:focus {
+        outline: none;
+        border-color: #ff6b9d;
+        box-shadow: 0 0 10px rgba(255,107,157,0.3);
+    }
 
-        .analyze-btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+    .analyze-btn {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+    }
+
+    .analyze-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+    }
+
+    .recipe-display {
+        background: white;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        color: #2c1810;
+        border: 3px solid rgba(255,179,102,0.5);
+    }
+
+    .recipe-header {
+        padding: 20px;
+        background: linear-gradient(45deg, #ffb366, #ff9a56);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .recipe-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .step-counter {
+        background: rgba(255,255,255,0.3);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: #2c1810;
+        font-weight: bold;
+    }
+
+    .current-step {
+        padding: 40px;
+        text-align: center;
+        min-height: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white;
+        position: relative;
+    }
+
+    .step-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: #f0f0f0;
+        overflow: hidden;
+    }
+
+    .step-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff6b9d, #ff9a56);
+        transition: width 0.5s ease;
+        width: 0%;
+    }
+
+    .step-number {
+        font-size: 1rem;
+        color: #ff9a56;
+        margin-bottom: 15px;
+        font-weight: bold;
+        background: rgba(255,154,86,0.1);
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .step-content {
+        font-size: 1.6rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-weight: 500;
+        padding: 20px;
+        background: rgba(255,107,157,0.05);
+        border-radius: 15px;
+        border-left: 4px solid #ff6b9d;
+    }
+
+    .timer-display {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #ff6b9d;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(255,107,157,0.3);
+    }
+
+    .timer-controls {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .timer-btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 100px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .timer-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .start-timer {
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+    }
+
+    .pause-timer {
+        background: linear-gradient(45deg, #ffb366, #ffa726);
+        color: white;
+    }
+
+    .stop-timer {
+        background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        color: #2c1810;
+    }
+
+    .next-btn {
+        width: 220px;
+        height: 65px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+        border: none;
+        border-radius: 35px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 auto;
+        display: block;
+        box-shadow: 0 6px 20px rgba(255,107,157,0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .next-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .next-btn:hover::before {
+        left: 100%;
+    }
+
+    .next-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255,107,157,0.4);
+    }
+
+    .next-btn:disabled {
+        background: linear-gradient(45deg, #e0e0e0, #d0d0d0);
+        color: #999;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .glowing {
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
             box-shadow: 0 4px 15px rgba(255,107,157,0.3);
         }
-
-        .analyze-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        to {
+            box-shadow: 0 8px 30px rgba(255,107,157,0.8), 0 0 20px rgba(255,154,86,0.5);
         }
+    }
 
-        .recipe-display {
-            background: white;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-            color: #2c1810;
-            border: 3px solid rgba(255,179,102,0.5);
-        }
+    .steps-preview {
+        padding: 20px;
+        background: #fff8f4;
+        border-top: 2px solid #ffb366;
+    }
 
-        .recipe-header {
-            padding: 20px;
-            background: linear-gradient(45deg, #ffb366, #ff9a56);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
+    .preview-title {
+        font-size: 1rem;
+        margin-bottom: 15px;
+        color: #ff9a56;
+        font-weight: bold;
+    }
 
-        .recipe-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
+    .step-list {
+        display: grid;
+        gap: 8px;
+    }
 
-        .step-counter {
-            background: rgba(255,255,255,0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #2c1810;
-            font-weight: bold;
-        }
+    .step-item {
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: #ffeee6;
+        border: 2px solid #ffb366;
+        margin-bottom: 8px;
+    }
 
-        .current-step {
-            padding: 40px;
-            text-align: center;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: white;
-            position: relative;
-        }
+    .step-item.completed {
+        background: #f0f0f0;
+        border-color: #ccc;
+        opacity: 0.7;
+        color: #999;
+        text-decoration: line-through;
+    }
 
-        .step-progress {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: #f0f0f0;
-            overflow: hidden;
-        }
+    .step-item.current {
+        background: #ffe6f2;
+        border: 3px solid #ff6b9d;
+        font-weight: bold;
+        color: #2c1810;
+        box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+    }
 
-        .step-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff6b9d, #ff9a56);
-            transition: width 0.5s ease;
-        }
+    .completion {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
 
-        .step-number {
-            font-size: 1rem;
-            color: #ff9a56;
-            margin-bottom: 15px;
-            font-weight: bold;
-            background: rgba(255,154,86,0.1);
-            padding: 8px 20px;
-            border-radius: 20px;
-            display: inline-block;
-        }
+    .completion-emoji {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
 
-        .step-content {
-            font-size: 1.6rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            font-weight: 500;
-            padding: 20px;
-            background: rgba(255,107,157,0.05);
-            border-radius: 15px;
-            border-left: 4px solid #ff6b9d;
-        }
+    .completion-text {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-        .timer-display {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff6b9d;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(255,107,157,0.3);
-        }
+    .restart-btn {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+    }
 
-        .timer-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
+    .restart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,107,157,0.4);
+    }
 
-        .timer-btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 100px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
+    .tabs {
+        display: flex;
+        background: white;
+        border-radius: 15px;
+        padding: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        gap: 5px;
+    }
 
-        .timer-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+    .tab-btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        color: #666;
+    }
 
-        .start-timer {
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-        }
+    .tab-btn.active {
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+        box-shadow: 0 2px 10px rgba(255,107,157,0.3);
+    }
 
-        .pause-timer {
-            background: linear-gradient(45deg, #ffb366, #ffa726);
-            color: white;
-        }
+    .tab-btn:hover:not(.active) {
+        background: rgba(255,179,102,0.2);
+    }
 
-        .stop-timer {
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-            color: #2c1810;
-        }
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border-left: 4px solid #f44336;
+        margin: 15px 0;
+        display: none;
+        animation: slideDown 0.3s ease;
+    }
 
-        .next-btn {
-            width: 220px;
-            height: 65px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-            border: none;
-            border-radius: 35px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 auto;
-            display: block;
-            box-shadow: 0 6px 20px rgba(255,107,157,0.3);
-            position: relative;
-            overflow: hidden;
-        }
+    .success-message {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border-left: 4px solid #4caf50;
+        margin: 15px 0;
+        display: none;
+        animation: slideDown 0.3s ease;
+    }
 
-        .next-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
         }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-        .next-btn:hover::before {
-            left: 100%;
-        }
+    .recipe-list {
+        display: grid;
+        gap: 15px;
+    }
 
-        .next-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255,107,157,0.4);
-        }
+    .recipe-item {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 2px solid #ffb366;
+    }
 
-        .next-btn:disabled {
-            background: linear-gradient(45deg, #e0e0e0, #d0d0d0);
-            color: #999;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+    .recipe-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
 
-        .glowing {
-            animation: glow 1.5s ease-in-out infinite alternate;
-        }
+    .recipe-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
 
-        @keyframes glow {
-            from {
-                box-shadow: 0 4px 15px rgba(255,107,157,0.3);
-            }
-            to {
-                box-shadow: 0 8px 30px rgba(255,107,157,0.8), 0 0 20px rgba(255,154,86,0.5);
-            }
-        }
+    .recipe-item-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2c1810;
+    }
 
-        .steps-preview {
-            padding: 20px;
-            background: #fff8f4;
-            border-top: 2px solid #ffb366;
-        }
+    .recipe-item-date {
+        font-size: 0.9rem;
+        color: #666;
+    }
 
-        .preview-title {
-            font-size: 1rem;
-            margin-bottom: 15px;
-            color: #ff9a56;
-            font-weight: bold;
-        }
+    .recipe-item-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
 
-        .step-list {
-            display: grid;
-            gap: 8px;
-        }
+    .recipe-item-steps {
+        font-size: 0.9rem;
+        color: #ff9a56;
+        font-weight: bold;
+    }
 
-        .step-item {
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            background: #ffeee6;
-            border: 2px solid #ffb366;
-            margin-bottom: 8px;
-        }
+    .recipe-item-favorite {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
 
-        .step-item.completed {
-            background: #f0f0f0;
-            border-color: #ccc;
-            opacity: 0.7;
-            color: #999;
-            text-decoration: line-through;
-        }
+    .recipe-item-favorite:hover {
+        transform: scale(1.2);
+    }
 
-        .step-item.current {
-            background: #ffe6f2;
-            border: 3px solid #ff6b9d;
-            font-weight: bold;
-            color: #2c1810;
-            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
-        }
+    .recipe-item-favorite.favorited {
+        color: #ffd700;
+    }
 
-        .completion {
-            text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-        }
+    .recipe-item-actions {
+        display: flex;
+        gap: 10px;
+    }
 
-        .completion-emoji {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
+    .recipe-item-btn {
+        flex: 1;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-        .completion-text {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+    .start-recipe-btn {
+        background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+        color: white;
+    }
 
-        .restart-btn {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
-        }
+    .delete-recipe-btn {
+        background: #f5f5f5;
+        color: #666;
+    }
 
-        .tabs {
-            display: flex;
-            background: white;
-            border-radius: 15px;
-            padding: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            gap: 5px;
-        }
+    .recipe-item-btn:hover {
+        transform: translateY(-1px);
+    }
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: transparent;
-            color: #666;
-        }
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1.1rem;
+    }
 
-        .tab-btn.active {
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-            box-shadow: 0 2px 10px rgba(255,107,157,0.3);
-        }
+    .recipe-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+</style>
+```
 
-        .tab-btn:hover:not(.active) {
-            background: rgba(255,179,102,0.2);
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 4px solid #f44336;
-            margin: 15px 0;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        .success-message {
-            background: #e8f5e8;
-            color: #2e7d32;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 4px solid #4caf50;
-            margin: 15px 0;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 履歴とお気に入りセクション */
-        .history-section, .favorites-section {
-            background: rgba(255,255,255,0.9);
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            color: #2c1810;
-        }
-
-        .history-section h2, .favorites-section h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: #ff9a56;
-        }
-
-        .recipe-list {
-            display: grid;
-            gap: 15px;
-        }
-
-        .recipe-item {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            border: 2px solid #ffb366;
-            transition: all 0.3s ease;
-        }
-
-        .recipe-item:hover {
-            box-shadow: 0 5px 20px rgba(255,107,157,0.2);
-            transform: translateY(-2px);
-        }
-
-        .recipe-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .recipe-item-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2c1810;
-        }
-
-        .recipe-item-date {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .recipe-item-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .recipe-item-steps {
-            font-size: 0.9rem;
-            color: #ff9a56;
-            font-weight: bold;
-        }
-
-        .recipe-item-favorite {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #ccc;
-            transition: color 0.3s ease;
-        }
-
-        .recipe-item-favorite.favorited {
-            color: #ffb366;
-        }
-
-        .recipe-item-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .recipe-item-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .start-recipe-btn {
-            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
-            color: white;
-            flex: 1;
-        }
-
-        .delete-recipe-btn {
-            background: #f5f5f5;
-            color: #666;
-            min-width: 60px;
-        }
-
-        .delete-recipe-btn:hover {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .recipe-actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .recipe-actions button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            background: transparent;
-            color: #ccc;
-            transition: all 0.3s ease;
-        }
-
-        .recipe-actions button:hover,
-        .recipe-actions button.favorited {
-            color: #ffb366;
-            transform: scale(1.1);
-        }
-
-        .empty-message {
-            text-align: center;
-            color: #999;
-            font-style: italic;
-            padding: 40px 20px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>👨‍🍳 レシピ工程タイマー</h1>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('new', this)">新規レシピ</button>
-            <button class="tab-btn" onclick="showTab('history', this)">履歴</button>
-            <button class="tab-btn" onclick="showTab('favorites', this)">お気に入り</button>
-        </div>
-        
-        <div class="recipe-input" id="recipeInput">
-            <h2>レシピをコピペしてください</h2>
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-            <input type="text" class="recipe-name" id="recipeName" placeholder="料理名（例：ハンバーグ）">
-            <textarea class="recipe-textarea" id="recipeText" placeholder="クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
+
+```
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('new', this)">新規レシピ</button>
+        <button class="tab-btn" onclick="showTab('history', this)">履歴</button>
+        <button class="tab-btn" onclick="showTab('favorites', this)">お気に入り</button>
+    </div>
+    
+    <div class="recipe-input" id="recipeInput">
+        <h2>レシピをコピペしてください</h2>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        <input type="text" class="recipe-name" id="recipeName" placeholder="料理名（例：ハンバーグ）">
+        <textarea class="recipe-textarea" id="recipeText" placeholder="クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
+```
 
 例：
+
 1. 玉ねぎをみじん切りにする
-2. フライパンで中火5分炒める
-3. ひき肉を加えて3分炒める
-4. 調味料を加えて混ぜる
-5. 形を整えて焼く（片面3分ずつ）
+1. フライパンで中火5分炒める
+1. ひき肉を加えて3分炒める
+1. 調味料を加えて混ぜる
+1. 形を整えて焼く（片面3分ずつ）
 
-時間が書いてあれば自動でタイマーを設定します！"></textarea>
-            <button class="analyze-btn" onclick="analyzeRecipe()">工程を分析する</button>
-        </div>
+時間が書いてあれば自動でタイマーを設定します！”></textarea>
+<button class="analyze-btn" onclick="analyzeRecipe()">工程を分析する</button>
+</div>
 
-        <div class="history-section hidden" id="historySection">
-            <h2>レシピ履歴</h2>
-            <div class="recipe-list" id="historyList">
-                <div class="empty-message">まだ履歴がありません</div>
-            </div>
-        </div>
-
-        <div class="favorites-section hidden" id="favoritesSection">
-            <h2>⭐ お気に入りレシピ</h2>
-            <div class="recipe-list" id="favoritesList">
-                <div class="empty-message">まだお気に入りがありません</div>
-            </div>
-        </div>
-
-        <div class="recipe-display hidden" id="recipeDisplay">
-            <div class="recipe-header">
-                <div class="recipe-title" id="displayRecipeName">料理名</div>
-                <div class="step-counter">
-                    <span id="currentStepNum">1</span> / <span id="totalSteps">5</span>
-                </div>
-            </div>
-            
-            <div class="current-step">
-                <div class="step-progress">
-                    <div class="step-progress-fill" id="stepProgress"></div>
-                </div>
-                <div class="step-number" id="stepNumber">工程 1</div>
-                <div class="step-content" id="stepContent">準備中...</div>
-                
-                <div class="timer-display hidden" id="timerDisplay">5:00</div>
-                <div class="timer-controls hidden" id="timerControls">
-                    <button class="timer-btn start-timer" onclick="startTimer()">開始</button>
-                    <button class="timer-btn pause-timer" onclick="pauseTimer()">停止</button>
-                    <button class="timer-btn stop-timer" onclick="resetTimer()">リセット</button>
-                </div>
-                
-                <button class="next-btn" id="nextBtn" onclick="nextStep()">次の工程へ</button>
-                
-                <div class="recipe-actions">
-                    <button id="favoriteBtn" onclick="toggleFavorite()" title="お気に入り">⭐</button>
-                </div>
-            </div>
-            
-            <div class="steps-preview">
-                <div class="preview-title">全工程</div>
-                <div class="step-list" id="stepList"></div>
-            </div>
-        </div>
-
-        <div class="completion hidden" id="completion">
-            <div class="completion-emoji">🎉</div>
-            <div class="completion-text">お疲れさまでした！</div>
-            <div>美味しい料理の完成です</div>
-            <button class="restart-btn" onclick="restart()">新しいレシピを始める</button>
+```
+    <div class="recipe-input hidden" id="historySection">
+        <h2>レシピ履歴</h2>
+        <div class="recipe-list" id="historyList">
+            <div class="empty-message">まだ履歴がありません</div>
         </div>
     </div>
 
-    <script>
-        let steps = [];
-        let currentStepIndex = 0;
-        let currentTimer = null;
-        let timerSeconds = 0;
-        let timerActive = false;
-        let currentRecipe = null;
+    <div class="recipe-input hidden" id="favoritesSection">
+        <h2>⭐ お気に入りレシピ</h2>
+        <div class="recipe-list" id="favoritesList">
+            <div class="empty-message">まだお気に入りがありません</div>
+        </div>
+    </div>
 
-        // ローカルストレージ関連の関数
-        function saveToHistory(recipe) {
+    <div class="recipe-display hidden" id="recipeDisplay">
+        <div class="recipe-header">
+            <div class="recipe-title" id="displayRecipeName">料理名</div>
+            <div class="step-counter">
+                <span id="currentStepNum">1</span> / <span id="totalSteps">5</span>
+            </div>
+        </div>
+        
+        <div class="current-step">
+            <div class="step-progress">
+                <div class="step-progress-fill" id="stepProgress"></div>
+            </div>
+            <div class="step-number" id="stepNumber">工程 1</div>
+            <div class="step-content" id="stepContent">準備中...</div>
+            
+            <div class="timer-display hidden" id="timerDisplay">5:00</div>
+            <div class="timer-controls hidden" id="timerControls">
+                <button class="timer-btn start-timer" onclick="startTimer()">開始</button>
+                <button class="timer-btn pause-timer" onclick="pauseTimer()">停止</button>
+                <button class="timer-btn stop-timer" onclick="resetTimer()">リセット</button>
+            </div>
+            
+            <button class="next-btn" id="nextBtn" onclick="nextStep()">次の工程へ</button>
+            
+            <div class="recipe-actions">
+                <button class="recipe-item-favorite" id="favoriteBtn" onclick="toggleFavorite()" title="お気に入り">⭐</button>
+            </div>
+        </div>
+        
+        <div class="steps-preview">
+            <div class="preview-title">全工程</div>
+            <div class="step-list" id="stepList"></div>
+        </div>
+    </div>
+
+    <div class="completion hidden" id="completion">
+        <div class="completion-emoji">🎉</div>
+        <div class="completion-text">お疲れさまでした！</div>
+        <div>美味しい料理の完成です</div>
+        <button class="restart-btn" onclick="restart()">新しいレシピを始める</button>
+    </div>
+</div>
+
+<script>
+    // グローバル変数
+    let steps = [];
+    let currentStepIndex = 0;
+    let currentTimer = null;
+    let timerSeconds = 0;
+    let timerActive = false;
+    let currentRecipe = null;
+
+    // エラーハンドリング
+    window.addEventListener('error', function(e) {
+        console.error('JavaScript Error:', e.message, e.filename, e.lineno);
+    });
+
+    // ローカルストレージ関連の関数
+    function saveToHistory(recipe) {
+        try {
             let history = JSON.parse(localStorage.getItem('recipeHistory') || '[]');
             const existingIndex = history.findIndex(r => r.name === recipe.name && r.text === recipe.text);
             
@@ -689,21 +679,40 @@
             }
             
             localStorage.setItem('recipeHistory', JSON.stringify(history));
+        } catch (e) {
+            console.error('履歴保存エラー:', e);
         }
+    }
 
-        function loadHistory() {
+    function loadHistory() {
+        try {
             return JSON.parse(localStorage.getItem('recipeHistory') || '[]');
+        } catch (e) {
+            console.error('履歴読み込みエラー:', e);
+            return [];
         }
+    }
 
-        function saveFavorites(favorites) {
+    function saveFavorites(favorites) {
+        try {
             localStorage.setItem('recipeFavorites', JSON.stringify(favorites));
+        } catch (e) {
+            console.error('お気に入り保存エラー:', e);
         }
+    }
 
-        function loadFavorites() {
+    function loadFavorites() {
+        try {
             return JSON.parse(localStorage.getItem('recipeFavorites') || '[]');
+        } catch (e) {
+            console.error('お気に入り読み込みエラー:', e);
+            return [];
         }
+    }
 
-        function showTab(tabName, button) {
+    // タブ表示切り替え
+    function showTab(tabName, button) {
+        try {
             // タブボタンのアクティブ状態を更新
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -718,9 +727,14 @@
             } else if (tabName === 'favorites') {
                 renderFavorites();
             }
+        } catch (e) {
+            console.error('タブ表示エラー:', e);
         }
+    }
 
-        function renderHistory() {
+    // 履歴表示
+    function renderHistory() {
+        try {
             const historyList = document.getElementById('historyList');
             const history = loadHistory();
             
@@ -730,9 +744,14 @@
             }
 
             historyList.innerHTML = history.map(recipe => createRecipeItemHTML(recipe, false)).join('');
+        } catch (e) {
+            console.error('履歴表示エラー:', e);
         }
+    }
 
-        function renderFavorites() {
+    // お気に入り表示
+    function renderFavorites() {
+        try {
             const favoritesList = document.getElementById('favoritesList');
             const favorites = loadFavorites();
             
@@ -742,16 +761,21 @@
             }
 
             favoritesList.innerHTML = favorites.map(recipe => createRecipeItemHTML(recipe, true)).join('');
+        } catch (e) {
+            console.error('お気に入り表示エラー:', e);
         }
+    }
 
-        function createRecipeItemHTML(recipe, isFavorite) {
+    // レシピアイテムHTML生成
+    function createRecipeItemHTML(recipe, isFavorite) {
+        try {
             const date = new Date(recipe.date).toLocaleDateString('ja-JP');
             const stepCount = recipe.steps ? recipe.steps.length : parseRecipe(recipe.text).length;
             
             return `
                 <div class="recipe-item">
                     <div class="recipe-item-header">
-                        <div class="recipe-item-title">${recipe.name}</div>
+                        <div class="recipe-item-title">${escapeHtml(recipe.name)}</div>
                         <div class="recipe-item-date">${date}</div>
                     </div>
                     <div class="recipe-item-info">
@@ -769,9 +793,25 @@
                     </div>
                 </div>
             `;
+        } catch (e) {
+            console.error('レシピアイテムHTML生成エラー:', e);
+            return '';
         }
+    }
 
-        function startSavedRecipe(recipeId) {
+    // HTMLエスケープ関数
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // 保存されたレシピを開始
+    function startSavedRecipe(recipeId) {
+        try {
             const history = loadHistory();
             const favorites = loadFavorites();
             const recipe = [...history, ...favorites].find(r => r.id === recipeId);
@@ -781,9 +821,14 @@
             document.getElementById('recipeName').value = recipe.name;
             document.getElementById('recipeText').value = recipe.text;
             analyzeRecipe();
+        } catch (e) {
+            console.error('保存されたレシピ開始エラー:', e);
         }
+    }
 
-        function toggleRecipeFavorite(recipeId, button) {
+    // お気に入りトグル（リスト内）
+    function toggleRecipeFavorite(recipeId, button) {
+        try {
             const history = loadHistory();
             const favorites = loadFavorites();
             const recipe = history.find(r => r.id === recipeId) || favorites.find(r => r.id === recipeId);
@@ -803,9 +848,14 @@
             }
             
             saveFavorites(favorites);
+        } catch (e) {
+            console.error('お気に入りトグルエラー:', e);
         }
+    }
 
-        function deleteRecipe(recipeId, fromFavorites) {
+    // レシピ削除
+    function deleteRecipe(recipeId, fromFavorites) {
+        try {
             if (confirm('このレシピを削除しますか？')) {
                 if (fromFavorites) {
                     const favorites = loadFavorites();
@@ -824,35 +874,54 @@
                     saveFavorites(filteredFavorites);
                 }
             }
+        } catch (e) {
+            console.error('レシピ削除エラー:', e);
         }
+    }
 
-        function showErrorMessage(message) {
+    // メッセージ表示
+    function showErrorMessage(message) {
+        try {
             const errorEl = document.getElementById('errorMessage');
             errorEl.textContent = message;
             errorEl.style.display = 'block';
             setTimeout(() => {
                 errorEl.style.display = 'none';
             }, 4000);
+        } catch (e) {
+            console.error('エラーメッセージ表示エラー:', e);
         }
+    }
 
-        function showSuccessMessage(message) {
+    function showSuccessMessage(message) {
+        try {
             const successEl = document.getElementById('successMessage');
             successEl.textContent = message;
             successEl.style.display = 'block';
             setTimeout(() => {
                 successEl.style.display = 'none';
             }, 3000);
+        } catch (e) {
+            console.error('成功メッセージ表示エラー:', e);
         }
+    }
 
-        function updateStepProgress() {
+    // 進行状況更新
+    function updateStepProgress() {
+        try {
             const progress = ((currentStepIndex + 1) / steps.length) * 100;
             const progressEl = document.getElementById('stepProgress');
             if (progressEl) {
                 progressEl.style.width = progress + '%';
             }
+        } catch (e) {
+            console.error('進行状況更新エラー:', e);
         }
+    }
 
-        function toggleFavorite() {
+    // お気に入りトグル（現在のレシピ）
+    function toggleFavorite() {
+        try {
             if (!currentRecipe) return;
             
             const favorites = loadFavorites();
@@ -870,9 +939,14 @@
             }
             
             saveFavorites(favorites);
+        } catch (e) {
+            console.error('お気に入りトグルエラー:', e);
         }
+    }
 
-        function analyzeRecipe() {
+    // レシピ分析
+    function analyzeRecipe() {
+        try {
             const recipeName = document.getElementById('recipeName').value.trim();
             const recipeText = document.getElementById('recipeText').value.trim();
             
@@ -938,9 +1012,15 @@
             
             // タブをリセット
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        } catch (e) {
+            console.error('レシピ分析エラー:', e);
+            showErrorMessage('レシピの分析中にエラーが発生しました');
         }
+    }
 
-        function parseRecipe(text) {
+    // レシピ解析
+    function parseRecipe(text) {
+        try {
             const lines = text.split('\n').filter(line => line.trim());
             const steps = [];
             
@@ -977,9 +1057,15 @@
             }
             
             return steps;
+        } catch (e) {
+            console.error('レシピ解析エラー:', e);
+            return [];
         }
+    }
 
-        function renderStepList() {
+    // ステップリスト表示
+    function renderStepList() {
+        try {
             const stepList = document.getElementById('stepList');
             stepList.innerHTML = '';
             
@@ -1002,9 +1088,14 @@
                 stepItem.textContent = `${index + 1}. ${step.text}${timeText}`;
                 stepList.appendChild(stepItem);
             });
+        } catch (e) {
+            console.error('ステップリスト表示エラー:', e);
         }
+    }
 
-        function showCurrentStep() {
+    // 現在のステップ表示
+    function showCurrentStep() {
+        try {
             if (currentStepIndex >= steps.length) {
                 showCompletion();
                 return;
@@ -1045,10 +1136,17 @@
                 currentTimer = null;
                 timerActive = false;
             }
+            
+            updateStepProgress();
+        } catch (e) {
+            console.error('現在のステップ表示エラー:', e);
         }
+    }
 
-        function startTimer() {
-            if (timerActive) return;
+    // タイマー開始
+    function startTimer() {
+        try {
+            if (timerActive || timerSeconds <= 0) return;
             
             timerActive = true;
             currentTimer = setInterval(() => {
@@ -1063,72 +1161,105 @@
                     document.getElementById('nextBtn').classList.add('glowing');
                 }
             }, 1000);
+        } catch (e) {
+            console.error('タイマー開始エラー:', e);
         }
+    }
 
-        function pauseTimer() {
+    // タイマー停止
+    function pauseTimer() {
+        try {
             if (currentTimer) {
                 clearInterval(currentTimer);
                 currentTimer = null;
                 timerActive = false;
             }
+        } catch (e) {
+            console.error('タイマー停止エラー:', e);
         }
+    }
 
-        function resetTimer() {
+    // タイマーリセット
+    function resetTimer() {
+        try {
             if (currentTimer) {
                 clearInterval(currentTimer);
                 currentTimer = null;
                 timerActive = false;
             }
-            timerSeconds = steps[currentStepIndex].time;
-            updateTimerDisplay();
-            document.getElementById('nextBtn').classList.remove('glowing');
+            const step = steps[currentStepIndex];
+            if (step && step.time > 0) {
+                timerSeconds = step.time;
+                updateTimerDisplay();
+                document.getElementById('nextBtn').classList.remove('glowing');
+            }
+        } catch (e) {
+            console.error('タイマーリセットエラー:', e);
         }
+    }
 
-        function updateTimerDisplay() {
+    // タイマー表示更新
+    function updateTimerDisplay() {
+        try {
             const minutes = Math.floor(timerSeconds / 60);
             const seconds = timerSeconds % 60;
             document.getElementById('timerDisplay').textContent = 
                 `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        } catch (e) {
+            console.error('タイマー表示更新エラー:', e);
         }
+    }
 
-        function playNotificationSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.3);
-            } catch (e) {
-                // サウンド再生に失敗しても処理を続行
-            }
+    // 通知音再生
+    function playNotificationSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.log('音声再生に失敗しました:', e);
         }
+    }
 
-        function nextStep() {
+    // 次のステップ
+    function nextStep() {
+        try {
             if (currentStepIndex < steps.length) {
                 steps[currentStepIndex].completed = true;
                 currentStepIndex++;
-                updateStepProgress();
                 showCurrentStep();
             }
+        } catch (e) {
+            console.error('次のステップエラー:', e);
         }
+    }
 
-        function showCompletion() {
+    // 完了画面表示
+    function showCompletion() {
+        try {
             document.getElementById('recipeDisplay').classList.add('hidden');
             document.getElementById('completion').classList.remove('hidden');
+        } catch (e) {
+            console.error('完了画面表示エラー:', e);
         }
+    }
 
-        function restart() {
+    // 再開始
+    function restart() {
+        try {
             // タブを新規レシピに戻す
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector('.tab-btn').classList.add('active');
@@ -1136,6 +1267,7 @@
             document.getElementById('recipeInput').classList.remove('hidden');
             document.getElementById('historySection').classList.add('hidden');
             document.getElementById('favoritesSection').classList.add('hidden');
+            document.getElementById('recipeDisplay').classList.add('hidden');
             document.getElementById('completion').classList.add('hidden');
             document.getElementById('recipeText').value = '';
             document.getElementById('recipeName').value = '';
@@ -1148,8 +1280,23 @@
             steps = [];
             currentStepIndex = 0;
             timerActive = false;
+            timerSeconds = 0;
             currentRecipe = null;
+        } catch (e) {
+            console.error('再開始エラー:', e);
         }
-    </script>
+    }
+
+    // 初期化処理
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            console.log('レシピ工程タイマーが読み込まれました');
+        } catch (e) {
+            console.error('初期化エラー:', e);
+        }
+    });
+</script>
+```
+
 </body>
 </html>
