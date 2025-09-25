@@ -1291,12 +1291,42 @@
     document.addEventListener('DOMContentLoaded', function() {
         try {
             console.log('レシピ工程タイマーが読み込まれました');
+            
+            // テキストエリアをクリア（念のため）
+            const recipeTextarea = document.getElementById('recipeText');
+            if (recipeTextarea && recipeTextarea.value.includes('<div')) {
+                recipeTextarea.value = '';
+            }
         } catch (e) {
             console.error('初期化エラー:', e);
         }
     });
-</script>
+    
+    // ページ読み込み後の処理
+    window.addEventListener('load', function() {
+        try {
+            // テキストエリアが汚れている場合はクリア
+            const recipeTextarea = document.getElementById('recipeText');
+            if (recipeTextarea && recipeTextarea.value.trim().startsWith('<')) {
+                recipeTextarea.value = '';
+                recipeTextarea.placeholder = `クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
 ```
+
+例：
+
+1. 玉ねぎをみじん切りにする
+1. フライパンで中火5分炒める
+1. ひき肉を加えて3分炒める
+1. 調味料を加えて混ぜる
+1. 形を整えて焼く（片面3分ずつ）
+
+時間が書いてあれば自動でタイマーを設定します！`;
+}
+} catch (e) {
+console.error(‘ページ読み込み処理エラー:’, e);
+}
+});
+</script>
 
 </body>
 </html>
