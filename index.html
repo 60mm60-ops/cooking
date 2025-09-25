@@ -244,7 +244,8 @@
 
         .steps-preview {
             padding: 20px;
-            background: rgba(255,179,102,0.1);
+            background: #fff8f4;
+            border-top: 2px solid #ffb366;
         }
 
         .preview-title {
@@ -264,22 +265,25 @@
             border-radius: 8px;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            background: rgba(255,179,102,0.2);
-            border: 1px solid rgba(255,179,102,0.3);
+            background: #ffeee6;
+            border: 2px solid #ffb366;
+            margin-bottom: 8px;
         }
 
         .step-item.completed {
-            background: rgba(255,107,157,0.2);
-            border-color: rgba(255,107,157,0.4);
+            background: #f0f0f0;
+            border-color: #ccc;
             opacity: 0.7;
             color: #999;
+            text-decoration: line-through;
         }
 
         .step-item.current {
-            background: rgba(255,107,157,0.3);
-            border: 2px solid #ff6b9d;
+            background: #ffe6f2;
+            border: 3px solid #ff6b9d;
             font-weight: bold;
             color: #2c1810;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
         }
 
         .completion {
@@ -310,8 +314,37 @@
             box-shadow: 0 4px 15px rgba(255,107,157,0.3);
         }
 
-        .hidden {
-            display: none;
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            gap: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+            box-shadow: 0 2px 10px rgba(255,107,157,0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(255,179,102,0.2);
         }
 
         @media (max-width: 480px) {
@@ -325,6 +358,12 @@
 <body>
     <div class="container">
         <h1>👨‍🍳 レシピ工程タイマー</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('new', this)">新規レシピ</button>
+            <button class="tab-btn" onclick="showTab('history', this)">履歴</button>
+            <button class="tab-btn" onclick="showTab('favorites', this)">お気に入り</button>
+        </div>
         
         <div class="recipe-input" id="recipeInput">
             <h2>レシピをコピペしてください</h2>
@@ -340,6 +379,20 @@
 
 時間が書いてあれば自動でタイマーを設定します！"></textarea>
             <button class="analyze-btn" onclick="analyzeRecipe()">工程を分析する</button>
+        </div>
+
+        <div class="history-section hidden" id="historySection">
+            <h2>レシピ履歴</h2>
+            <div class="recipe-list" id="historyList">
+                <div class="empty-message">まだ履歴がありません</div>
+            </div>
+        </div>
+
+        <div class="favorites-section hidden" id="favoritesSection">
+            <h2>⭐ お気に入りレシピ</h2>
+            <div class="recipe-list" id="favoritesList">
+                <div class="empty-message">まだお気に入りがありません</div>
+            </div>
         </div>
 
         <div class="recipe-display hidden" id="recipeDisplay">
@@ -362,6 +415,10 @@
                 </div>
                 
                 <button class="next-btn" id="nextBtn" onclick="nextStep()">次の工程へ</button>
+                
+                <div class="recipe-actions" style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                    <button class="recipe-item-favorite" id="favoriteBtn" onclick="toggleFavorite()" title="お気に入り">⭐</button>
+                </div>
             </div>
             
             <div class="steps-preview">
@@ -384,6 +441,181 @@
         let currentTimer = null;
         let timerSeconds = 0;
         let timerActive = false;
+        let currentRecipe = null;
+
+        // ローカルストレージ関連の関数
+        function saveToHistory(recipe) {
+            let history = JSON.parse(localStorage.getItem('recipeHistory') || '[]');
+            const existingIndex = history.findIndex(r => r.name === recipe.name && r.text === recipe.text);
+            
+            if (existingIndex !== -1) {
+                history[existingIndex].date = new Date().toISOString();
+            } else {
+                recipe.date = new Date().toISOString();
+                recipe.id = Date.now().toString();
+                history.unshift(recipe);
+                if (history.length > 20) {
+                    history = history.slice(0, 20);
+                }
+            }
+            
+            localStorage.setItem('recipeHistory', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            return JSON.parse(localStorage.getItem('recipeHistory') || '[]');
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem('recipeFavorites', JSON.stringify(favorites));
+        }
+
+        function loadFavorites() {
+            return JSON.parse(localStorage.getItem('recipeFavorites') || '[]');
+        }
+
+        function showTab(tabName, button) {
+            // タブボタンのアクティブ状態を更新
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // セクションの表示/非表示
+            document.getElementById('recipeInput').classList.toggle('hidden', tabName !== 'new');
+            document.getElementById('historySection').classList.toggle('hidden', tabName !== 'history');
+            document.getElementById('favoritesSection').classList.toggle('hidden', tabName !== 'favorites');
+
+            if (tabName === 'history') {
+                renderHistory();
+            } else if (tabName === 'favorites') {
+                renderFavorites();
+            }
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = loadHistory();
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-message">まだ履歴がありません</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map(recipe => createRecipeItemHTML(recipe, false)).join('');
+        }
+
+        function renderFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            const favorites = loadFavorites();
+            
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = '<div class="empty-message">まだお気に入りがありません</div>';
+                return;
+            }
+
+            favoritesList.innerHTML = favorites.map(recipe => createRecipeItemHTML(recipe, true)).join('');
+        }
+
+        function createRecipeItemHTML(recipe, isFavorite) {
+            const date = new Date(recipe.date).toLocaleDateString('ja-JP');
+            const stepCount = recipe.steps ? recipe.steps.length : parseRecipe(recipe.text).length;
+            
+            return `
+                <div class="recipe-item">
+                    <div class="recipe-item-header">
+                        <div class="recipe-item-title">${recipe.name}</div>
+                        <div class="recipe-item-date">${date}</div>
+                    </div>
+                    <div class="recipe-item-info">
+                        <div class="recipe-item-steps">${stepCount}工程</div>
+                        <button class="recipe-item-favorite ${isFavorite ? 'favorited' : ''}" 
+                                onclick="toggleRecipeFavorite('${recipe.id}', this)">
+                            ${isFavorite ? '⭐' : '☆'}
+                        </button>
+                    </div>
+                    <div class="recipe-item-actions">
+                        <button class="recipe-item-btn start-recipe-btn" 
+                                onclick="startSavedRecipe('${recipe.id}')">このレシピを開始</button>
+                        <button class="recipe-item-btn delete-recipe-btn" 
+                                onclick="deleteRecipe('${recipe.id}', ${isFavorite})">削除</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startSavedRecipe(recipeId) {
+            const history = loadHistory();
+            const favorites = loadFavorites();
+            const recipe = [...history, ...favorites].find(r => r.id === recipeId);
+            
+            if (!recipe) return;
+
+            document.getElementById('recipeName').value = recipe.name;
+            document.getElementById('recipeText').value = recipe.text;
+            analyzeRecipe();
+        }
+
+        function toggleRecipeFavorite(recipeId, button) {
+            const history = loadHistory();
+            const favorites = loadFavorites();
+            const recipe = history.find(r => r.id === recipeId) || favorites.find(r => r.id === recipeId);
+            
+            if (!recipe) return;
+
+            const favoriteIndex = favorites.findIndex(f => f.id === recipeId);
+            
+            if (favoriteIndex === -1) {
+                favorites.push(recipe);
+                button.textContent = '⭐';
+                button.classList.add('favorited');
+            } else {
+                favorites.splice(favoriteIndex, 1);
+                button.textContent = '☆';
+                button.classList.remove('favorited');
+            }
+            
+            saveFavorites(favorites);
+        }
+
+        function deleteRecipe(recipeId, fromFavorites) {
+            if (confirm('このレシピを削除しますか？')) {
+                if (fromFavorites) {
+                    const favorites = loadFavorites();
+                    const filtered = favorites.filter(r => r.id !== recipeId);
+                    saveFavorites(filtered);
+                    renderFavorites();
+                } else {
+                    const history = loadHistory();
+                    const filtered = history.filter(r => r.id !== recipeId);
+                    localStorage.setItem('recipeHistory', JSON.stringify(filtered));
+                    renderHistory();
+                    
+                    // お気に入りからも削除
+                    const favorites = loadFavorites();
+                    const filteredFavorites = favorites.filter(r => r.id !== recipeId);
+                    saveFavorites(filteredFavorites);
+                }
+            }
+        }
+
+        function toggleFavorite() {
+            if (!currentRecipe) return;
+            
+            const favorites = loadFavorites();
+            const favoriteIndex = favorites.findIndex(f => f.id === currentRecipe.id);
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            
+            if (favoriteIndex === -1) {
+                favorites.push(currentRecipe);
+                favoriteBtn.textContent = '⭐';
+                favoriteBtn.classList.add('favorited');
+            } else {
+                favorites.splice(favoriteIndex, 1);
+                favoriteBtn.textContent = '☆';
+                favoriteBtn.classList.remove('favorited');
+            }
+            
+            saveFavorites(favorites);
+        }
 
         function analyzeRecipe() {
             const recipeName = document.getElementById('recipeName').value.trim();
@@ -401,7 +633,31 @@
                 return;
             }
 
-            document.getElementById('displayRecipeName').textContent = recipeName || '料理';
+            // 現在のレシピを保存
+            currentRecipe = {
+                id: Date.now().toString(),
+                name: recipeName || '料理',
+                text: recipeText,
+                steps: steps,
+                date: new Date().toISOString()
+            };
+
+            // 履歴に保存
+            saveToHistory(currentRecipe);
+
+            // お気に入り状態をチェック
+            const favorites = loadFavorites();
+            const isFavorited = favorites.some(f => f.name === currentRecipe.name && f.text === currentRecipe.text);
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            if (isFavorited) {
+                favoriteBtn.textContent = '⭐';
+                favoriteBtn.classList.add('favorited');
+            } else {
+                favoriteBtn.textContent = '☆';
+                favoriteBtn.classList.remove('favorited');
+            }
+
+            document.getElementById('displayRecipeName').textContent = currentRecipe.name;
             document.getElementById('totalSteps').textContent = steps.length;
             
             renderStepList();
@@ -409,7 +665,12 @@
             showCurrentStep();
             
             document.getElementById('recipeInput').classList.add('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('favoritesSection').classList.add('hidden');
             document.getElementById('recipeDisplay').classList.remove('hidden');
+            
+            // タブをリセット
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         }
 
         function parseRecipe(text) {
@@ -600,7 +861,13 @@
         }
 
         function restart() {
+            // タブを新規レシピに戻す
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.tab-btn').classList.add('active');
+            
             document.getElementById('recipeInput').classList.remove('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('favoritesSection').classList.add('hidden');
             document.getElementById('completion').classList.add('hidden');
             document.getElementById('recipeText').value = '';
             document.getElementById('recipeName').value = '';
@@ -613,6 +880,7 @@
             steps = [];
             currentStepIndex = 0;
             timerActive = false;
+            currentRecipe = null;
         }
     </script>
 </body>
