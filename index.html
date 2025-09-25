@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レシピ工程タイマー</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: linear-gradient(135deg, #ff9a56 0%, #ffad56 50%, #ff6b9d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c1810;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.3);
+            color: #2c1810;
+        }
+
+        .recipe-input {
+            background: rgba(255,255,255,0.9);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: #2c1810;
+        }
+
+        .recipe-input h2 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .recipe-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #ffb366;
+            border-radius: 10px;
+            background: white;
+            color: #2c1810;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .recipe-textarea:focus {
+            outline: none;
+            border-color: #ff6b9d;
+            box-shadow: 0 0 10px rgba(255,107,157,0.3);
+        }
+
+        .recipe-name {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ffb366;
+            border-radius: 10px;
+            background: white;
+            color: #2c1810;
+            font-size: 1.1rem;
+        }
+
+        .recipe-name:focus {
+            outline: none;
+            border-color: #ff6b9d;
+            box-shadow: 0 0 10px rgba(255,107,157,0.3);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        }
+
+        .recipe-display {
+            background: white;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            color: #2c1810;
+            border: 3px solid rgba(255,179,102,0.5);
+        }
+
+        .recipe-header {
+            padding: 20px;
+            background: linear-gradient(45deg, #ffb366, #ff9a56);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .recipe-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .step-counter {
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #2c1810;
+            font-weight: bold;
+        }
+
+        .current-step {
+            padding: 40px;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+        .step-number {
+            font-size: 1.2rem;
+            color: #ff9a56;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .step-content {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255,107,157,0.3);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .timer-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-timer {
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+        }
+
+        .pause-timer {
+            background: linear-gradient(45deg, #ffb366, #ffa726);
+            color: white;
+        }
+
+        .stop-timer {
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            color: #2c1810;
+        }
+
+        .next-btn {
+            width: 200px;
+            height: 80px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        }
+
+        .next-btn:disabled {
+            background: linear-gradient(45deg, #e0e0e0, #d0d0d0);
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .glowing {
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+            }
+            to {
+                box-shadow: 0 8px 30px rgba(255,107,157,0.8), 0 0 20px rgba(255,154,86,0.5);
+            }
+        }
+
+        .steps-preview {
+            padding: 20px;
+            background: rgba(255,179,102,0.1);
+        }
+
+        .preview-title {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #ff9a56;
+            font-weight: bold;
+        }
+
+        .step-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .step-item {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: rgba(255,179,102,0.2);
+            border: 1px solid rgba(255,179,102,0.3);
+        }
+
+        .step-item.completed {
+            background: rgba(255,107,157,0.2);
+            border-color: rgba(255,107,157,0.4);
+            opacity: 0.7;
+            color: #999;
+        }
+
+        .step-item.current {
+            background: rgba(255,107,157,0.3);
+            border: 2px solid #ff6b9d;
+            font-weight: bold;
+            color: #2c1810;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .completion-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .restart-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .step-content { font-size: 1.3rem; }
+            .timer-display { font-size: 2.5rem; }
+            .next-btn { width: 150px; height: 60px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👨‍🍳 レシピ工程タイマー</h1>
+        
+        <div class="recipe-input" id="recipeInput">
+            <h2>レシピをコピペしてください</h2>
+            <input type="text" class="recipe-name" id="recipeName" placeholder="料理名（例：ハンバーグ）">
+            <textarea class="recipe-textarea" id="recipeText" placeholder="クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
+
+例：
+1. 玉ねぎをみじん切りにする
+2. フライパンで中火5分炒める
+3. ひき肉を加えて3分炒める
+4. 調味料を加えて混ぜる
+5. 形を整えて焼く（片面3分ずつ）
+
+時間が書いてあれば自動でタイマーを設定します！"></textarea>
+            <button class="analyze-btn" onclick="analyzeRecipe()">工程を分析する</button>
+        </div>
+
+        <div class="recipe-display hidden" id="recipeDisplay">
+            <div class="recipe-header">
+                <div class="recipe-title" id="displayRecipeName">料理名</div>
+                <div class="step-counter">
+                    <span id="currentStepNum">1</span> / <span id="totalSteps">5</span>
+                </div>
+            </div>
+            
+            <div class="current-step">
+                <div class="step-number" id="stepNumber">工程 1</div>
+                <div class="step-content" id="stepContent">準備中...</div>
+                
+                <div class="timer-display hidden" id="timerDisplay">5:00</div>
+                <div class="timer-controls hidden" id="timerControls">
+                    <button class="timer-btn start-timer" onclick="startTimer()">開始</button>
+                    <button class="timer-btn pause-timer" onclick="pauseTimer()">停止</button>
+                    <button class="timer-btn stop-timer" onclick="resetTimer()">リセット</button>
+                </div>
+                
+                <button class="next-btn" id="nextBtn" onclick="nextStep()">次の工程へ</button>
+            </div>
+            
+            <div class="steps-preview">
+                <div class="preview-title">全工程</div>
+                <div class="step-list" id="stepList"></div>
+            </div>
+        </div>
+
+        <div class="completion hidden" id="completion">
+            <div class="completion-emoji">🎉</div>
+            <div class="completion-text">お疲れさまでした！</div>
+            <div>美味しい料理の完成です</div>
+            <button class="restart-btn" onclick="restart()">新しいレシピを始める</button>
+        </div>
+    </div>
+
+    <script>
+        let steps = [];
+        let currentStepIndex = 0;
+        let currentTimer = null;
+        let timerSeconds = 0;
+        let timerActive = false;
+
+        function analyzeRecipe() {
+            const recipeName = document.getElementById('recipeName').value.trim();
+            const recipeText = document.getElementById('recipeText').value.trim();
+            
+            if (!recipeText) {
+                alert('レシピを入力してください');
+                return;
+            }
+
+            steps = parseRecipe(recipeText);
+            
+            if (steps.length === 0) {
+                alert('工程を認識できませんでした。番号付きリストで入力してください。');
+                return;
+            }
+
+            document.getElementById('displayRecipeName').textContent = recipeName || '料理';
+            document.getElementById('totalSteps').textContent = steps.length;
+            
+            renderStepList();
+            currentStepIndex = 0;
+            showCurrentStep();
+            
+            document.getElementById('recipeInput').classList.add('hidden');
+            document.getElementById('recipeDisplay').classList.remove('hidden');
+        }
+
+        function parseRecipe(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const steps = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                // 番号や記号を除去
+                let cleanLine = line.replace(/^[\d\.\-\*\•\s]+/, '').trim();
+                if (!cleanLine) continue;
+                
+                // 時間を抽出（例：5分、3分間、10秒など）
+                const timeMatches = cleanLine.match(/(\d+)(?:時間|分間?|秒)/g);
+                let totalSeconds = 0;
+                
+                if (timeMatches) {
+                    for (let timeMatch of timeMatches) {
+                        const num = parseInt(timeMatch);
+                        if (timeMatch.includes('時間')) {
+                            totalSeconds += num * 3600;
+                        } else if (timeMatch.includes('分')) {
+                            totalSeconds += num * 60;
+                        } else if (timeMatch.includes('秒')) {
+                            totalSeconds += num;
+                        }
+                    }
+                }
+                
+                steps.push({
+                    text: cleanLine,
+                    time: totalSeconds,
+                    completed: false
+                });
+            }
+            
+            return steps;
+        }
+
+        function renderStepList() {
+            const stepList = document.getElementById('stepList');
+            stepList.innerHTML = '';
+            
+            steps.forEach((step, index) => {
+                const stepItem = document.createElement('div');
+                stepItem.className = 'step-item';
+                stepItem.id = `step-item-${index}`;
+                
+                let timeText = '';
+                if (step.time > 0) {
+                    const minutes = Math.floor(step.time / 60);
+                    const seconds = step.time % 60;
+                    if (minutes > 0) {
+                        timeText = seconds > 0 ? ` (${minutes}分${seconds}秒)` : ` (${minutes}分)`;
+                    } else {
+                        timeText = ` (${seconds}秒)`;
+                    }
+                }
+                
+                stepItem.textContent = `${index + 1}. ${step.text}${timeText}`;
+                stepList.appendChild(stepItem);
+            });
+        }
+
+        function showCurrentStep() {
+            if (currentStepIndex >= steps.length) {
+                showCompletion();
+                return;
+            }
+            
+            const step = steps[currentStepIndex];
+            
+            document.getElementById('currentStepNum').textContent = currentStepIndex + 1;
+            document.getElementById('stepNumber').textContent = `工程 ${currentStepIndex + 1}`;
+            document.getElementById('stepContent').textContent = step.text;
+            
+            // ステップリストの表示更新
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('current', 'completed');
+                if (index < currentStepIndex) {
+                    item.classList.add('completed');
+                } else if (index === currentStepIndex) {
+                    item.classList.add('current');
+                }
+            });
+            
+            // タイマー表示の更新
+            if (step.time > 0) {
+                timerSeconds = step.time;
+                updateTimerDisplay();
+                document.getElementById('timerDisplay').classList.remove('hidden');
+                document.getElementById('timerControls').classList.remove('hidden');
+                document.getElementById('nextBtn').classList.remove('glowing');
+            } else {
+                document.getElementById('timerDisplay').classList.add('hidden');
+                document.getElementById('timerControls').classList.add('hidden');
+                document.getElementById('nextBtn').classList.add('glowing');
+            }
+            
+            // タイマーリセット
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+        }
+
+        function startTimer() {
+            if (timerActive) return;
+            
+            timerActive = true;
+            currentTimer = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(currentTimer);
+                    currentTimer = null;
+                    timerActive = false;
+                    playNotificationSound();
+                    document.getElementById('nextBtn').classList.add('glowing');
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+        }
+
+        function resetTimer() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+            timerSeconds = steps[currentStepIndex].time;
+            updateTimerDisplay();
+            document.getElementById('nextBtn').classList.remove('glowing');
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                // サウンド再生に失敗しても処理を続行
+            }
+        }
+
+        function nextStep() {
+            if (currentStepIndex < steps.length) {
+                steps[currentStepIndex].completed = true;
+                currentStepIndex++;
+                showCurrentStep();
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('recipeDisplay').classList.add('hidden');
+            document.getElementById('completion').classList.remove('hidden');
+        }
+
+        function restart() {
+            document.getElementById('recipeInput').classList.remove('hidden');
+            document.getElementById('completion').classList.add('hidden');
+            document.getElementById('recipeText').value = '';
+            document.getElementById('recipeName').value = '';
+            
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            
+            steps = [];
+            currentStepIndex = 0;
+            timerActive = false;
+        }
+    </script>
+</body>
+</html>
