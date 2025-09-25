@@ -875,3 +875,281 @@
         function analyzeRecipe() {
             const recipeName = document.getElementById('recipeName').value.trim();
             const recipeText = document.getElementById('recipeText').value.trim();
+            
+            if (!recipeText) {
+                showErrorMessage('レシピを入力してください');
+                return;
+            }
+
+            if (recipeText.length < 10) {
+                showErrorMessage('レシピの内容が短すぎます。もう少し詳しく入力してください');
+                return;
+            }
+
+            steps = parseRecipe(recipeText);
+            
+            if (steps.length === 0) {
+                showErrorMessage('工程を認識できませんでした。番号付きリスト形式で入力してください\n例: 1. 玉ねぎを切る\n2. フライパンで炒める');
+                return;
+            }
+
+            if (steps.length > 50) {
+                showErrorMessage('工程が多すぎます（50工程以下にしてください）');
+                return;
+            }
+
+            // 現在のレシピを保存
+            currentRecipe = {
+                id: Date.now().toString(),
+                name: recipeName || '料理',
+                text: recipeText,
+                steps: steps,
+                date: new Date().toISOString()
+            };
+
+            // 履歴に保存
+            saveToHistory(currentRecipe);
+            showSuccessMessage(`「${currentRecipe.name}」を分析しました！${steps.length}工程で開始します`);
+
+            // お気に入り状態をチェック
+            const favorites = loadFavorites();
+            const isFavorited = favorites.some(f => f.name === currentRecipe.name && f.text === currentRecipe.text);
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            if (isFavorited) {
+                favoriteBtn.textContent = '⭐';
+                favoriteBtn.classList.add('favorited');
+            } else {
+                favoriteBtn.textContent = '☆';
+                favoriteBtn.classList.remove('favorited');
+            }
+
+            document.getElementById('displayRecipeName').textContent = currentRecipe.name;
+            document.getElementById('totalSteps').textContent = steps.length;
+            
+            renderStepList();
+            currentStepIndex = 0;
+            showCurrentStep();
+            updateStepProgress();
+            
+            document.getElementById('recipeInput').classList.add('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('favoritesSection').classList.add('hidden');
+            document.getElementById('recipeDisplay').classList.remove('hidden');
+            
+            // タブをリセット
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        }
+
+        function parseRecipe(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const steps = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                // 番号や記号を除去
+                let cleanLine = line.replace(/^[\d\.\-\*\•\s]+/, '').trim();
+                if (!cleanLine) continue;
+                
+                // 時間を抽出（例：5分、3分間、10秒など）
+                const timeMatches = cleanLine.match(/(\d+)(?:時間|分間?|秒)/g);
+                let totalSeconds = 0;
+                
+                if (timeMatches) {
+                    for (let timeMatch of timeMatches) {
+                        const num = parseInt(timeMatch);
+                        if (timeMatch.includes('時間')) {
+                            totalSeconds += num * 3600;
+                        } else if (timeMatch.includes('分')) {
+                            totalSeconds += num * 60;
+                        } else if (timeMatch.includes('秒')) {
+                            totalSeconds += num;
+                        }
+                    }
+                }
+                
+                steps.push({
+                    text: cleanLine,
+                    time: totalSeconds,
+                    completed: false
+                });
+            }
+            
+            return steps;
+        }
+
+        function renderStepList() {
+            const stepList = document.getElementById('stepList');
+            stepList.innerHTML = '';
+            
+            steps.forEach((step, index) => {
+                const stepItem = document.createElement('div');
+                stepItem.className = 'step-item';
+                stepItem.id = `step-item-${index}`;
+                
+                let timeText = '';
+                if (step.time > 0) {
+                    const minutes = Math.floor(step.time / 60);
+                    const seconds = step.time % 60;
+                    if (minutes > 0) {
+                        timeText = seconds > 0 ? ` (${minutes}分${seconds}秒)` : ` (${minutes}分)`;
+                    } else {
+                        timeText = ` (${seconds}秒)`;
+                    }
+                }
+                
+                stepItem.textContent = `${index + 1}. ${step.text}${timeText}`;
+                stepList.appendChild(stepItem);
+            });
+        }
+
+        function showCurrentStep() {
+            if (currentStepIndex >= steps.length) {
+                showCompletion();
+                return;
+            }
+            
+            const step = steps[currentStepIndex];
+            
+            document.getElementById('currentStepNum').textContent = currentStepIndex + 1;
+            document.getElementById('stepNumber').textContent = `工程 ${currentStepIndex + 1}`;
+            document.getElementById('stepContent').textContent = step.text;
+            
+            // ステップリストの表示更新
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('current', 'completed');
+                if (index < currentStepIndex) {
+                    item.classList.add('completed');
+                } else if (index === currentStepIndex) {
+                    item.classList.add('current');
+                }
+            });
+            
+            // タイマー表示の更新
+            if (step.time > 0) {
+                timerSeconds = step.time;
+                updateTimerDisplay();
+                document.getElementById('timerDisplay').classList.remove('hidden');
+                document.getElementById('timerControls').classList.remove('hidden');
+                document.getElementById('nextBtn').classList.remove('glowing');
+            } else {
+                document.getElementById('timerDisplay').classList.add('hidden');
+                document.getElementById('timerControls').classList.add('hidden');
+                document.getElementById('nextBtn').classList.add('glowing');
+            }
+            
+            // タイマーリセット
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+        }
+
+        function startTimer() {
+            if (timerActive) return;
+            
+            timerActive = true;
+            currentTimer = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(currentTimer);
+                    currentTimer = null;
+                    timerActive = false;
+                    playNotificationSound();
+                    document.getElementById('nextBtn').classList.add('glowing');
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+        }
+
+        function resetTimer() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+                timerActive = false;
+            }
+            timerSeconds = steps[currentStepIndex].time;
+            updateTimerDisplay();
+            document.getElementById('nextBtn').classList.remove('glowing');
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                // サウンド再生に失敗しても処理を続行
+            }
+        }
+
+        function nextStep() {
+            if (currentStepIndex < steps.length) {
+                steps[currentStepIndex].completed = true;
+                currentStepIndex++;
+                updateStepProgress();
+                showCurrentStep();
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('recipeDisplay').classList.add('hidden');
+            document.getElementById('completion').classList.remove('hidden');
+        }
+
+        function restart() {
+            // タブを新規レシピに戻す
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.tab-btn').classList.add('active');
+            
+            document.getElementById('recipeInput').classList.remove('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('favoritesSection').classList.add('hidden');
+            document.getElementById('completion').classList.add('hidden');
+            document.getElementById('recipeText').value = '';
+            document.getElementById('recipeName').value = '';
+            
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            
+            steps = [];
+            currentStepIndex = 0;
+            timerActive = false;
+            currentRecipe = null;
+        }
+    </script>
+</body>
+</html>
