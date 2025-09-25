@@ -577,6 +577,119 @@
             font-style: italic;
             padding: 40px 20px;
         }
+
+        /* URL入力関連のスタイル */
+        .input-tabs {
+            display: flex;
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 20px;
+            gap: 3px;
+        }
+
+        .input-tab-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #666;
+        }
+
+        .input-tab-btn.active {
+            background: linear-gradient(45deg, #ff6b9d, #ff9a56);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255,107,157,0.3);
+        }
+
+        .input-tab-btn:hover:not(.active) {
+            background: rgba(255,179,102,0.2);
+        }
+
+        .url-input-section {
+            margin-bottom: 20px;
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+        .recipe-url {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ffb366;
+            border-radius: 10px;
+            background: white;
+            color: #2c1810;
+            font-size: 1rem;
+        }
+
+        .recipe-url:focus {
+            outline: none;
+            border-color: #ff6b9d;
+            box-shadow: 0 0 10px rgba(255,107,157,0.3);
+        }
+
+        .fetch-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ff9a56, #ffb366);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .fetch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,154,86,0.4);
+        }
+
+        .fetch-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .supported-sites {
+            background: #fff3e0;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9a56;
+        }
+
+        .supported-sites small {
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #ff6b9d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -590,11 +703,34 @@
         </div>
         
         <div class="recipe-input" id="recipeInput">
-            <h2>レシピをコピペしてください</h2>
+            <h2>レシピを入力してください</h2>
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
-            <input type="text" class="recipe-name" id="recipeName" placeholder="料理名（例：ハンバーグ）">
-            <textarea class="recipe-textarea" id="recipeText" placeholder="クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
+            
+            <!-- 入力方法切り替えタブ -->
+            <div class="input-tabs">
+                <button class="input-tab-btn active" onclick="switchInputMode('text', this)">テキスト入力</button>
+                <button class="input-tab-btn" onclick="switchInputMode('url', this)">URL入力</button>
+            </div>
+            
+            <!-- URL入力モード -->
+            <div class="url-input-section hidden" id="urlInputSection">
+                <div class="url-input-group">
+                    <input type="url" class="recipe-url" id="recipeUrl" placeholder="レシピのURLを入力（例：https://cookpad.com/recipe/...）">
+                    <button class="fetch-btn" onclick="fetchRecipeFromUrl()">📥 取得</button>
+                </div>
+                <div class="supported-sites">
+                    <small>
+                        ⚠️ 技術的制約により、全てのサイトに対応していません<br>
+                        💡 取得できない場合は下記の「テキスト入力」をお使いください
+                    </small>
+                </div>
+            </div>
+            
+            <!-- テキスト入力モード -->
+            <div class="text-input-section" id="textInputSection">
+                <input type="text" class="recipe-name" id="recipeName" placeholder="料理名（例：ハンバーグ）">
+                <textarea class="recipe-textarea" id="recipeText" placeholder="クックパッドやしろごはん.comなどのレシピをそのままコピペしてください。
 
 例：
 1. 玉ねぎをみじん切りにする
@@ -604,6 +740,8 @@
 5. 形を整えて焼く（片面3分ずつ）
 
 時間が書いてあれば自動でタイマーを設定します！"></textarea>
+            </div>
+            
             <button class="analyze-btn" onclick="analyzeRecipe()">工程を分析する</button>
         </div>
 
@@ -665,12 +803,199 @@
     </div>
 
     <script>
-        let steps = [];
-        let currentStepIndex = 0;
-        let currentTimer = null;
-        let timerSeconds = 0;
-        let timerActive = false;
-        let currentRecipe = null;
+        // 入力モード切り替え関数
+        function switchInputMode(mode, button) {
+            // タブボタンのアクティブ状態を更新
+            document.querySelectorAll('.input-tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // セクションの表示/非表示
+            const urlSection = document.getElementById('urlInputSection');
+            const textSection = document.getElementById('textInputSection');
+            
+            if (mode === 'url') {
+                urlSection.classList.remove('hidden');
+                textSection.classList.add('hidden');
+            } else {
+                urlSection.classList.add('hidden');
+                textSection.classList.remove('hidden');
+            }
+        }
+
+        // プロキシサービスを使用したURL取得（CORS回避）
+        async function fetchRecipeFromUrl() {
+            const url = document.getElementById('recipeUrl').value.trim();
+            const fetchBtn = document.querySelector('.fetch-btn');
+            
+            if (!url) {
+                showErrorMessage('URLを入力してください');
+                return;
+            }
+
+            if (!isValidUrl(url)) {
+                showErrorMessage('有効なURLを入力してください');
+                return;
+            }
+
+            fetchBtn.disabled = true;
+            fetchBtn.innerHTML = '<span class="loading-spinner"></span>取得中...';
+
+            try {
+                // AllOrigins プロキシサービスを使用（無料でCORS回避）
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                if (!data.contents) {
+                    throw new Error('コンテンツを取得できませんでした');
+                }
+
+                const recipeData = parseRecipeFromHtml(data.contents, url);
+                
+                if (recipeData.name || recipeData.steps.length > 0) {
+                    document.getElementById('recipeName').value = recipeData.name || extractNameFromUrl(url);
+                    document.getElementById('recipeText').value = recipeData.steps.join('\n');
+                    
+                    // テキスト入力モードに切り替えて結果を表示
+                    switchInputMode('text', document.querySelector('.input-tab-btn'));
+                    
+                    showSuccessMessage(`レシピを取得しました！${recipeData.steps.length}工程を認識`);
+                } else {
+                    throw new Error('レシピの工程を認識できませんでした');
+                }
+
+            } catch (error) {
+                console.error('URL取得エラー:', error);
+                showErrorMessage(`取得に失敗しました: ${error.message}\n手動でテキストをコピペしてください`);
+                
+                // テキスト入力モードに切り替え
+                switchInputMode('text', document.querySelector('.input-tab-btn'));
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.innerHTML = '📥 取得';
+            }
+        }
+
+        // URL妥当性チェック
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // HTMLからレシピを抽出する関数
+        function parseRecipeFromHtml(html, url) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            let recipeName = '';
+            let steps = [];
+
+            // サイト別の抽出ロジック
+            if (url.includes('cookpad.com')) {
+                recipeName = extractCookpadRecipe(doc).name;
+                steps = extractCookpadRecipe(doc).steps;
+            } else if (url.includes('kurashiru.com')) {
+                recipeName = extractKurashiruRecipe(doc).name;
+                steps = extractKurashiruRecipe(doc).steps;
+            } else if (url.includes('recipe.rakuten.co.jp')) {
+                recipeName = extractRakutenRecipe(doc).name;
+                steps = extractRakutenRecipe(doc).steps;
+            } else {
+                // 汎用的な抽出
+                recipeName = extractGenericRecipe(doc).name;
+                steps = extractGenericRecipe(doc).steps;
+            }
+
+            return { name: recipeName, steps: steps };
+        }
+
+        // Cookpad用抽出
+        function extractCookpadRecipe(doc) {
+            const name = doc.querySelector('h1.recipe-title, .recipe_title')?.textContent?.trim() || '';
+            const stepElements = doc.querySelectorAll('.step, .recipe_step, [class*="step"]');
+            const steps = Array.from(stepElements).map((el, index) => {
+                const text = el.textContent?.trim() || '';
+                return text ? `${index + 1}. ${text}` : '';
+            }).filter(step => step);
+
+            return { name, steps };
+        }
+
+        // クラシル用抽出
+        function extractKurashiruRecipe(doc) {
+            const name = doc.querySelector('h1, .recipe-title')?.textContent?.trim() || '';
+            const stepElements = doc.querySelectorAll('[class*="instruction"], [class*="step"]');
+            const steps = Array.from(stepElements).map((el, index) => {
+                const text = el.textContent?.trim() || '';
+                return text ? `${index + 1}. ${text}` : '';
+            }).filter(step => step);
+
+            return { name, steps };
+        }
+
+        // 楽天レシピ用抽出
+        function extractRakutenRecipe(doc) {
+            const name = doc.querySelector('h1, .recipe_title')?.textContent?.trim() || '';
+            const stepElements = doc.querySelectorAll('.recipe_howto li, [class*="step"]');
+            const steps = Array.from(stepElements).map((el, index) => {
+                const text = el.textContent?.trim() || '';
+                return text ? `${index + 1}. ${text}` : '';
+            }).filter(step => step);
+
+            return { name, steps };
+        }
+
+        // 汎用的な抽出
+        function extractGenericRecipe(doc) {
+            // タイトルを取得
+            const name = doc.querySelector('h1')?.textContent?.trim() || 
+                        doc.querySelector('title')?.textContent?.trim() || '';
+
+            // 工程らしい要素を探す
+            const possibleStepSelectors = [
+                'ol li', 'ul li', '.step', '.instruction', '[class*="step"]',
+                '[class*="instruction"]', '[class*="method"]', '.recipe-step'
+            ];
+
+            let steps = [];
+            for (let selector of possibleStepSelectors) {
+                const elements = doc.querySelectorAll(selector);
+                if (elements.length > 2) { // ある程度の数がある場合のみ採用
+                    steps = Array.from(elements).map((el, index) => {
+                        const text = el.textContent?.trim() || '';
+                        return text.length > 10 ? `${index + 1}. ${text}` : ''; // 短すぎる文は除外
+                    }).filter(step => step && step.length > 15); // より詳細な工程のみ
+
+                    if (steps.length > 0) break;
+                }
+            }
+
+            return { name: name.replace(/\|.*$/, '').trim(), steps }; // タイトルからサイト名を除去
+        }
+
+        // URLから料理名を推測
+        function extractNameFromUrl(url) {
+            try {
+                const urlObj = new URL(url);
+                const pathParts = urlObj.pathname.split('/');
+                
+                // URLの最後の部分から推測
+                for (let i = pathParts.length - 1; i >= 0; i--) {
+                    const part = pathParts[i];
+                    if (part && part !== 'recipe' && part !== 'recipes' && !part.match(/^\d+$/)) {
+                        return decodeURIComponent(part).replace(/-|_/g, ' ');
+                    }
+                }
+            } catch (e) {
+                return '取得したレシピ';
+            }
+            return '取得したレシピ';
+        }
 
         // ローカルストレージ関連の関数
         function saveToHistory(recipe) {
